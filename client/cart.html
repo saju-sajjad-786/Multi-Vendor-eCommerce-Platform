@@ -11,36 +11,44 @@
     <header class="navbar">
         <div class="container">
             <a href="index.html" class="logo">Nex<span>Store</span></a>
+            <div class="nav-links">
+                <a href="shop.html" class="nav-item">Shop</a>
+                <a href="cart.html" class="cart-btn active">
+                    <i class="ph ph-shopping-cart-simple"></i>
+                    <span class="cart-count">0</span>
+                </a>
+            </div>
         </div>
     </header>
 
-    <main class="container" style="padding: 60px 20px;">
-        <h1 style="margin-bottom: 40px;">Your Shopping Cart</h1>
+    <main class="container" style="padding: 140px 20px 80px;">
+        <h1 style="font-size: 3rem; margin-bottom: 48px;">Shopping Cart</h1>
         
-        <div class="cart-layout" style="display: grid; grid-template-columns: 1fr 350px; gap: 40px;">
-            <div id="cart-items" style="display: flex; flex-direction: column; gap: 20px;">
+        <div class="cart-layout">
+            <div id="cart-items">
                 <!-- Items -->
             </div>
 
-            <div class="cart-summary" style="background: var(--surface); padding: 30px; border-radius: 12px; height: fit-content;">
-                <h3 style="margin-bottom: 24px;">Order Summary</h3>
-                <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+            <aside class="cart-summary-card reveal">
+                <h3 style="font-size: 1.5rem; margin-bottom: 24px;">Order Summary</h3>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 16px; color: var(--text-muted);">
                     <span>Subtotal</span>
-                    <span id="subtotal">$0.00</span>
+                    <span id="subtotal" style="color: var(--white);">$0.00</span>
                 </div>
-                <div style="display: flex; justify-content: space-between; margin-bottom: 24px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 24px; color: var(--text-muted);">
                     <span>Shipping</span>
-                    <span>Free</span>
+                    <span style="color: #10b981;">FREE</span>
                 </div>
-                <div style="display: flex; justify-content: space-between; font-weight: 800; font-size: 1.2rem; margin-bottom: 30px; border-top: 1px solid var(--glass-border); padding-top: 20px;">
+                <div style="display: flex; justify-content: space-between; font-weight: 800; font-size: 1.5rem; margin-bottom: 32px; border-top: 1px solid var(--glass-border); padding-top: 24px;">
                     <span>Total</span>
-                    <span id="total">$0.00</span>
+                    <span id="total" style="color: var(--primary);">$0.00</span>
                 </div>
-                <button class="btn btn-primary" style="width: 100%;" onclick="window.location.href='checkout.html'">Proceed to Checkout</button>
-            </div>
+                <button class="btn btn-primary btn-lg" style="width: 100%;" onclick="window.location.href='checkout.html'">Proceed to Checkout</button>
+            </aside>
         </div>
     </main>
 
+    <script src="js/app.js" type="module"></script>
     <script type="module">
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
         const itemsContainer = document.getElementById('cart-items');
@@ -49,23 +57,23 @@
 
         const renderCart = () => {
             if (cart.length === 0) {
-                itemsContainer.innerHTML = '<p>Your cart is empty.</p>';
+                itemsContainer.innerHTML = '<p style="text-align: center; padding: 100px; color: var(--text-muted);">Your cart is empty.</p>';
                 return;
             }
 
             itemsContainer.innerHTML = cart.map((item, index) => `
-                <div class="cart-item" style="display: flex; align-items: center; gap: 20px; background: var(--surface); padding: 20px; border-radius: 12px; border: 1px solid var(--glass-border);">
-                    <img src="${item.image}" alt="" style="width: 80px; height: 80px; border-radius: 8px; object-fit: cover;">
-                    <div style="flex: 1;">
+                <div class="cart-item reveal">
+                    <img src="${item.image}" alt="">
+                    <div class="cart-item-info" style="flex: 1;">
                         <h3>${item.name}</h3>
-                        <p style="color: var(--primary); font-weight: 700;">$${item.price}</p>
+                        <p style="color: var(--primary); font-weight: 700;">$${item.price.toFixed(2)}</p>
                     </div>
-                    <div style="display: flex; align-items: center; gap: 15px;">
-                        <button onclick="changeQty(${index}, -1)" class="btn btn-glass" style="padding: 5px 12px;">-</button>
+                    <div class="cart-qty-control">
+                        <button onclick="window.changeQty(${index}, -1)" class="qty-btn"><i class="ph ph-minus"></i></button>
                         <span>${item.qty}</span>
-                        <button onclick="changeQty(${index}, 1)" class="btn btn-glass" style="padding: 5px 12px;">+</button>
+                        <button onclick="window.changeQty(${index}, 1)" class="qty-btn"><i class="ph ph-plus"></i></button>
                     </div>
-                    <button onclick="removeItem(${index})" style="background: transparent; border: none; color: #ef4444; font-size: 1.5rem; cursor: pointer;">
+                    <button onclick="window.removeItem(${index})" style="background: transparent; border: none; color: #ef4444; font-size: 1.5rem; cursor: pointer;">
                         <i class="ph ph-trash"></i>
                     </button>
                 </div>
@@ -90,6 +98,7 @@
         const saveAndRender = () => {
             localStorage.setItem('cart', JSON.stringify(cart));
             renderCart();
+            location.reload();
         };
 
         renderCart();
