@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | NexStore</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body>
+    <header class="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">Nex<span>Store</span></a>
+            <div id="user-info" style="display: flex; align-items: center; gap: 20px;">
+                <div class="user-meta" style="text-align: right;">
+                    <div id="dash-user-name" style="font-weight: 700; color: var(--white);">User</div>
+                    <span id="role-badge" class="product-tag" style="position: static; font-size: 0.65rem;">Customer</span>
+                </div>
+                <button class="btn btn-outline" id="logout-btn">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="dashboard-layout">
+            <aside class="sidebar">
+                <nav class="sidebar-nav">
+                    <a href="#" class="sidebar-link active" data-view="overview">
+                        <i class="ph ph-layout"></i> Overview
+                    </a>
+                    <a href="#" class="sidebar-link hidden" data-view="products" id="vendor-products-link">
+                        <i class="ph ph-package"></i> My Catalog
+                    </a>
+                    <a href="#" class="sidebar-link" data-view="orders">
+                        <i class="ph ph-shopping-bag"></i> Purchases
+                    </a>
+                    <a href="#" class="sidebar-link hidden" data-view="users" id="admin-users-link">
+                        <i class="ph ph-users"></i> Platform Users
+                    </a>
+                </nav>
+            </aside>
+
+            <section id="dashboard-content">
+                <div id="overview-view" class="view-section">
+                    <h1 style="font-size: 2.5rem; margin-bottom: 32px;">Overview Dashboard</h1>
+                    <div class="stats-grid">
+                        <div class="stat-card reveal">
+                            <p>Active Orders</p>
+                            <h2 id="total-orders-count">0</h2>
+                        </div>
+                        <div id="vendor-earning-card" class="stat-card hidden reveal">
+                            <p>Revenue</p>
+                            <h2 id="total-earnings">$0.00</h2>
+                        </div>
+                        <div class="stat-card reveal">
+                            <p>Loyalty Points</p>
+                            <h2>120</h2>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="products-view" class="view-section hidden">
+                    <div class="section-header">
+                        <h2>My Product Catalog</h2>
+                        <button class="btn btn-primary" id="add-product-btn">
+                            <i class="ph ph-plus"></i> New Product
+                        </button>
+                    </div>
+                    <div id="vendor-products-list" class="product-grid">
+                        <!-- Loaded via JS -->
+                    </div>
+                </div>
+
+                <div id="orders-view" class="view-section hidden">
+                    <h2>Order History</h2>
+                    <p style="color: var(--text-muted); margin-top: 20px;">You haven't placed any orders yet.</p>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Modal for Adding Product -->
+    <div id="product-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add New Product</h3>
+                <p style="color: var(--text-muted);">Fill in the details to list your item.</p>
+            </div>
+            <form id="add-product-form">
+                <div class="form-group">
+                    <label>Product Name</label>
+                    <input type="text" id="p-name" class="form-input" placeholder="e.g. Premium Leather Watch" required>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="p-desc" class="form-input" placeholder="What makes this special?" required style="height: 100px;"></textarea>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div class="form-group">
+                        <label>Price ($)</label>
+                        <input type="number" id="p-price" class="form-input" required step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label>Stock</label>
+                        <input type="number" id="p-stock" class="form-input" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Category</label>
+                    <select id="p-cat" class="form-input" required>
+                        <option value="Electronics">Electronics</option>
+                        <option value="Fashion">Fashion</option>
+                        <option value="Home & Kitchen">Home & Kitchen</option>
+                        <option value="Beauty">Beauty</option>
+                    </select>
+                </div>
+                <div style="display: flex; gap: 16px; margin-top: 32px;">
+                    <button type="submit" class="btn btn-primary" style="flex: 2;">List Product</button>
+                    <button type="button" class="btn btn-outline" style="flex: 1;" onclick="document.getElementById('product-modal').classList.remove('active')">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/app.js" type="module"></script>
+    <script type="module">
+        const user = JSON.parse(localStorage.getItem('user'));
+        const token = localStorage.getItem('token');
+
+        if (!user) window.location.href = 'login.html';
+
+        document.getElementById('dash-user-name').textContent = user.name;
+        document.getElementById('role-badge').textContent = user.role;
+
+        // Role-based UI
+        if (user.role === 'vendor' || user.role === 'admin') {
+            document.getElementById('vendor-products-link').classList.remove('hidden');
+            document.getElementById('vendor-earning-card')?.classList.remove('hidden');
+        }
+
+        // View Switcher
+        document.querySelectorAll('.sidebar-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const view = e.currentTarget.dataset.view;
+                
+                // Update active link
+                document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+                e.currentTarget.classList.add('active');
+
+                // Update visible section
+                document.querySelectorAll('.view-section').forEach(v => v.classList.add('hidden'));
+                document.getElementById(`${view}-view`).classList.remove('hidden');
+
+                if (view === 'products') fetchVendorProducts();
+            });
+        });
+
+        // Add Product Modal
+        document.getElementById('add-product-btn').addEventListener('click', () => {
+            document.getElementById('product-modal').classList.add('active');
+        });
+
+        // Fetch Vendor Products
+        const fetchVendorProducts = async () => {
+            const list = document.getElementById('vendor-products-list');
+            list.innerHTML = '<p>Loading your catalog...</p>';
+            
+            try {
+                // Assuming backend has a way to filter by vendor or just returns all for now
+                const res = await fetch(`http://localhost:5000/api/products`);
+                const data = await res.json();
+                if (data.success) {
+                    const myProducts = data.data.filter(p => p.vendor?._id === user._id || p.vendor === user._id);
+                    renderVendorProducts(myProducts);
+                }
+            } catch (err) {
+                list.innerHTML = '<p class="error">Failed to load products.</p>';
+            }
+        };
+
+        const renderVendorProducts = (products) => {
+            const list = document.getElementById('vendor-products-list');
+            if (products.length === 0) {
+                list.innerHTML = '<p style="grid-column:1/-1;">No products found in your catalog.</p>';
+                return;
+            }
+            list.innerHTML = products.map(p => `
+                <div class="product-card">
+                    <div class="product-image"><img src="${p.image}" alt=""></div>
+                    <div class="product-info">
+                        <h3>${p.name}</h3>
+                        <p>$${p.price}</p>
+                        <div class="product-actions">
+                            <button class="btn btn-outline" onclick="deleteProduct('${p._id}')"><i class="ph ph-trash"></i></button>
+                            <a href="product.html?id=${p._id}" class="btn btn-glass"><i class="ph ph-eye"></i></a>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        };
+
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            localStorage.removeItem('user');
+            localStorage.removeItem('token');
+            window.location.href = 'index.html';
+        });
+
+        // Re-use logic from app.js for toast if needed
+        const notify = (msg) => { if (window.showToast) window.showToast(msg); else alert(msg); };
+    </script>
+</body>
+</html>

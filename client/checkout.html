@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout | NexStore</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body>
+    <header class="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">Nex<span>Store</span></a>
+        </div>
+    </header>
+
+    <main class="container" style="padding: 60px 20px;">
+        <h1 style="margin-bottom: 40px;">Checkout</h1>
+        
+        <form id="checkout-form" class="checkout-layout" style="display: grid; grid-template-columns: 1fr 400px; gap: 40px;">
+            <div class="shipping-info" style="background: var(--surface); padding: 40px; border-radius: 12px; display: flex; flex-direction: column; gap: 20px;">
+                <h3>Shipping Details</h3>
+                <input type="text" id="address" placeholder="Address" required style="padding: 12px; background: var(--background); border: 1px solid var(--glass-border); color: white; border-radius: 8px;">
+                <input type="text" id="city" placeholder="City" required style="padding: 12px; background: var(--background); border: 1px solid var(--glass-border); color: white; border-radius: 8px;">
+                <input type="text" id="postalCode" placeholder="Postal Code" required style="padding: 12px; background: var(--background); border: 1px solid var(--glass-border); color: white; border-radius: 8px;">
+                <input type="text" id="country" placeholder="Country" required style="padding: 12px; background: var(--background); border: 1px solid var(--glass-border); color: white; border-radius: 8px;">
+            </div>
+
+            <div class="summary" style="background: var(--surface); padding: 40px; border-radius: 12px; height: fit-content;">
+                <h3>Order Summary</h3>
+                <div id="checkout-items" style="margin: 20px 0;"></div>
+                <div style="font-size: 1.5rem; font-weight: 800; border-top: 1px solid var(--glass-border); padding-top: 20px;">
+                    Total: <span id="checkout-total">$0.00</span>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 30px; padding: 15px;">Place Order</button>
+            </div>
+        </form>
+    </main>
+
+    <script type="module">
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        const user = JSON.parse(localStorage.getItem('user'));
+        const token = localStorage.getItem('token');
+
+        if (!user) window.location.href = 'login.html';
+        if (cart.length === 0) window.location.href = 'shop.html';
+
+        const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+        document.getElementById('checkout-total').textContent = `$${total.toFixed(2)}`;
+
+        document.getElementById('checkout-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const orderData = {
+                orderItems: cart,
+                shippingAddress: {
+                    address: document.getElementById('address').value,
+                    city: document.getElementById('city').value,
+                    postalCode: document.getElementById('postalCode').value,
+                    country: document.getElementById('country').value,
+                },
+                paymentMethod: 'PayPal',
+                totalPrice: total
+            };
+
+            try {
+                const res = await fetch('http://localhost:5000/api/orders', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(orderData)
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    alert('Order placed successfully!');
+                    localStorage.removeItem('cart');
+                    window.location.href = 'dashboard.html';
+                } else {
+                    alert(data.message);
+                }
+            } catch (err) {
+                alert('Connection error');
+            }
+        });
+    </script>
+</body>
+</html>

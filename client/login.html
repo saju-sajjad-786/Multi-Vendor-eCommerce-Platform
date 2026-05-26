@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | NexStore</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body style="min-height: 100vh; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle at top right, #1e293b, #0f172a);">
+    
+    <div class="auth-card" style="width: 100%; max-width: 450px; padding: 40px; background: var(--surface); border: 1px solid var(--glass-border); border-radius: 20px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);">
+        <div style="text-align: center; margin-bottom: 32px;">
+            <a href="index.html" class="logo" style="display: block; margin-bottom: 16px;">Nex<span>Store</span></a>
+            <h2 style="font-size: 1.8rem;">Welcome Back</h2>
+            <p style="color: var(--text-muted);">Please enter your details to sign in</p>
+        </div>
+
+        <form id="login-form">
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; margin-bottom: 8px; font-weight: 500;">Email Address</label>
+                <input type="email" id="email" required style="width: 100%; padding: 12px 16px; background: var(--background); border: 1px solid var(--glass-border); border-radius: 10px; color: white; outline: none;" placeholder="name@example.com">
+            </div>
+            <div style="margin-bottom: 24px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                    <label style="font-weight: 500;">Password</label>
+                    <a href="#" style="font-size: 0.9rem; color: var(--primary);">Forgot?</a>
+                </div>
+                <input type="password" id="password" required style="width: 100%; padding: 12px 16px; background: var(--background); border: 1px solid var(--glass-border); border-radius: 10px; color: white; outline: none;" placeholder="••••••••">
+            </div>
+            
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 14px;">Sign In</button>
+        </form>
+
+        <div style="text-align: center; margin-top: 32px; color: var(--text-muted);">
+            Don't have an account? <a href="register.html" style="color: var(--primary); font-weight: 600;">Sign up for free</a>
+        </div>
+    </div>
+
+    <script type="module">
+        const loginForm = document.getElementById('login-form');
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const res = await fetch('http://localhost:5000/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    localStorage.setItem('token', data.token);
+                    window.location.href = 'index.html';
+                } else {
+                    alert(data.message || 'Login failed');
+                }
+            } catch (err) {
+                alert('Connection error');
+            }
+        });
+    </script>
+</body>
+</html>

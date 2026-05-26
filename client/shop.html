@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop | NexStore</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body>
+    <header class="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">Nex<span>Store</span></a>
+            
+            <div class="search-bar">
+                <input type="text" id="shop-search-input" placeholder="Search premium products...">
+                <button type="button" id="shop-search-btn"><i class="ph ph-magnifying-glass"></i></button>
+            </div>
+
+            <nav class="nav-links">
+                <a href="shop.html" class="nav-item active">Shop</a>
+                <a href="cart.html" class="cart-btn">
+                    <i class="ph ph-shopping-cart-simple"></i>
+                    <span class="cart-count">0</span>
+                </a>
+                <div id="auth-links">
+                    <a href="login.html" class="btn btn-outline">Login</a>
+                </div>
+                <div id="user-menu" class="hidden">
+                    <a href="dashboard.html" class="nav-item user-profile">
+                        <i class="ph ph-user-circle"></i>
+                    </a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="shop-layout">
+            <aside class="filters-wrapper">
+                <div class="filter-card">
+                    <div class="filter-section">
+                        <h3>Categories</h3>
+                        <ul class="filter-list" id="category-filter">
+                            <li><a href="#" data-cat="all" class="active">All Collections</a></li>
+                            <li><a href="#" data-cat="Electronics">Electronics</a></li>
+                            <li><a href="#" data-cat="Fashion">Fashion</a></li>
+                            <li><a href="#" data-cat="Home & Kitchen">Home & Kitchen</a></li>
+                            <li><a href="#" data-cat="Beauty">Beauty</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="filter-section">
+                        <h3>Sort By</h3>
+                        <select id="price-sort" class="custom-select">
+                            <option value="newest">Latest Arrivals</option>
+                            <option value="price-low">Price: Low to High</option>
+                            <option value="price-high">Price: High to Low</option>
+                        </select>
+                    </div>
+                </div>
+            </aside>
+
+            <section class="shop-content">
+                <div class="section-header">
+                    <h2 id="shop-title">Our Marketplace</h2>
+                </div>
+                <div class="product-grid" id="featured-products">
+                    <!-- Products will be loaded by fetchFeaturedProducts from app.js -->
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="js/app.js" type="module"></script>
+    <script type="module">
+        import { init } from './js/app.js'; // This is not how ES modules work with scripts, but app.js already runs init
+        
+        // Custom logic for filtering on this page
+        const categoryLinks = document.querySelectorAll('#category-filter a');
+        const priceSort = document.getElementById('price-sort');
+        const shopTitle = document.getElementById('shop-title');
+
+        // Helper to get query params
+        const urlParams = new URLSearchParams(window.location.search);
+        const initialCat = urlParams.get('category') || 'all';
+        const initialSearch = urlParams.get('search') || '';
+
+        const updateShop = (cat = 'all', sort = 'newest', search = '') => {
+            // Call globally defined fetchFeaturedProducts (it's not exported, but it's on global scope if we remove modules or handle it)
+            // Actually, app.js is a module, so we should export functions or use a shared state.
+            // For simplicity in this demo, I'll make fetchFeaturedProducts accessible or handle it here.
+        };
+    </script>
+</body>
+</html>

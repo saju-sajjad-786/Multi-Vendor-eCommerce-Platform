@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexStore | Multi-Vendor Marketplace</title>
+    <meta name="description" content="Premium multi-vendor eCommerce platform featuring high-quality products from trusted vendors.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Hero Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body>
+    <header class="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">Nex<span>Store</span></a>
+            
+            <div class="search-bar">
+                <input type="text" placeholder="Search premium products...">
+                <button type="button"><i class="ph ph-magnifying-glass"></i></button>
+            </div>
+
+            <nav class="nav-links">
+                <a href="shop.html" class="nav-item">Shop</a>
+                <a href="cart.html" class="cart-btn">
+                    <i class="ph ph-shopping-cart-simple"></i>
+                    <span class="cart-count">0</span>
+                </a>
+                <div id="auth-links">
+                    <a href="login.html" class="btn btn-outline">Login</a>
+                    <a href="register.html" class="btn btn-primary">Join</a>
+                </div>
+                <div id="user-menu" class="hidden">
+                    <a href="dashboard.html" class="nav-item user-profile">
+                        <i class="ph ph-user-circle"></i>
+                        <span id="user-name">Account</span>
+                    </a>
+                </div>
+            </nav>
+
+            <button class="mobile-menu-btn" style="display: none;">
+                <i class="ph ph-list"></i>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <h1>Discover the <span>Future</span> of Shopping</h1>
+                    <p>Experience a curated marketplace with premium products from verified vendors worldwide. Quality meets convenience.</p>
+                    <div class="hero-btns">
+                        <a href="shop.html" class="btn btn-primary btn-lg">Shop Now</a>
+                        <a href="#featured" class="btn btn-glass btn-lg">Learn More</a>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&q=80&w=800" alt="Premium Shopping">
+                </div>
+            </div>
+            <div class="blob"></div>
+        </section>
+
+        <!-- Categories -->
+        <section class="categories container">
+            <div class="section-header">
+                <h2>Browse Categories</h2>
+                <a href="shop.html">View All</a>
+            </div>
+            <div class="category-grid">
+                <div class="category-card" data-category="Electronics">
+                    <i class="ph ph-device-mobile"></i>
+                    <span>Electronics</span>
+                </div>
+                <div class="category-card" data-category="Fashion">
+                    <i class="ph ph-t-shirt"></i>
+                    <span>Fashion</span>
+                </div>
+                <div class="category-card" data-category="Home & Kitchen">
+                    <i class="ph ph-cooking-pot"></i>
+                    <span>Home</span>
+                </div>
+                <div class="category-card" data-category="Beauty">
+                    <i class="ph ph-sparkle"></i>
+                    <span>Beauty</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Products -->
+        <section id="featured" class="products container">
+            <div class="section-header">
+                <h2>Featured Products</h2>
+            </div>
+            <div class="product-grid" id="featured-products">
+                <!-- Loading Skeleton / JavaScript will populate this -->
+                <div class="loading">Loading products...</div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-info">
+                    <a href="index.html" class="logo">Nex<span>Store</span></a>
+                    <p>The ultimate multi-vendor marketplace for quality products.</p>
+                </div>
+                <div class="footer-links">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="shop.html">Shop</a></li>
+                        <li><a href="vendor-apply.html">Become a Vendor</a></li>
+                    </ul>
+                </div>
+                <div class="footer-newsletter">
+                    <h3>Join our Newsletter</h3>
+                    <div class="newsletter-form">
+                        <input type="email" placeholder="Enter your email">
+                        <button class="btn btn-primary">Join</button>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 NexStore. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/app.js" type="module"></script>
+</body>
+</html>

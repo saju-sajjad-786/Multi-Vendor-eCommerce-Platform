@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart | NexStore</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+</head>
+<body>
+    <header class="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">Nex<span>Store</span></a>
+        </div>
+    </header>
+
+    <main class="container" style="padding: 60px 20px;">
+        <h1 style="margin-bottom: 40px;">Your Shopping Cart</h1>
+        
+        <div class="cart-layout" style="display: grid; grid-template-columns: 1fr 350px; gap: 40px;">
+            <div id="cart-items" style="display: flex; flex-direction: column; gap: 20px;">
+                <!-- Items -->
+            </div>
+
+            <div class="cart-summary" style="background: var(--surface); padding: 30px; border-radius: 12px; height: fit-content;">
+                <h3 style="margin-bottom: 24px;">Order Summary</h3>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                    <span>Subtotal</span>
+                    <span id="subtotal">$0.00</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 24px;">
+                    <span>Shipping</span>
+                    <span>Free</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-weight: 800; font-size: 1.2rem; margin-bottom: 30px; border-top: 1px solid var(--glass-border); padding-top: 20px;">
+                    <span>Total</span>
+                    <span id="total">$0.00</span>
+                </div>
+                <button class="btn btn-primary" style="width: 100%;" onclick="window.location.href='checkout.html'">Proceed to Checkout</button>
+            </div>
+        </div>
+    </main>
+
+    <script type="module">
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        const itemsContainer = document.getElementById('cart-items');
+        const totalEl = document.getElementById('total');
+        const subtotalEl = document.getElementById('subtotal');
+
+        const renderCart = () => {
+            if (cart.length === 0) {
+                itemsContainer.innerHTML = '<p>Your cart is empty.</p>';
+                return;
+            }
+
+            itemsContainer.innerHTML = cart.map((item, index) => `
+                <div class="cart-item" style="display: flex; align-items: center; gap: 20px; background: var(--surface); padding: 20px; border-radius: 12px; border: 1px solid var(--glass-border);">
+                    <img src="${item.image}" alt="" style="width: 80px; height: 80px; border-radius: 8px; object-fit: cover;">
+                    <div style="flex: 1;">
+                        <h3>${item.name}</h3>
+                        <p style="color: var(--primary); font-weight: 700;">$${item.price}</p>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <button onclick="changeQty(${index}, -1)" class="btn btn-glass" style="padding: 5px 12px;">-</button>
+                        <span>${item.qty}</span>
+                        <button onclick="changeQty(${index}, 1)" class="btn btn-glass" style="padding: 5px 12px;">+</button>
+                    </div>
+                    <button onclick="removeItem(${index})" style="background: transparent; border: none; color: #ef4444; font-size: 1.5rem; cursor: pointer;">
+                        <i class="ph ph-trash"></i>
+                    </button>
+                </div>
+            `).join('');
+
+            const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            totalEl.textContent = `$${total.toFixed(2)}`;
+            subtotalEl.textContent = `$${total.toFixed(2)}`;
+        };
+
+        window.changeQty = (index, diff) => {
+            cart[index].qty += diff;
+            if (cart[index].qty < 1) cart[index].qty = 1;
+            saveAndRender();
+        };
+
+        window.removeItem = (index) => {
+            cart.splice(index, 1);
+            saveAndRender();
+        };
+
+        const saveAndRender = () => {
+            localStorage.setItem('cart', JSON.stringify(cart));
+            renderCart();
+        };
+
+        renderCart();
+    </script>
+</body>
+</html>
